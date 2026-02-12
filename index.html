@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Das Protokoll</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="article-header">
+      <p class="kicker" id="article-kicker"></p>
+      <h1 id="article-title"></h1>
+      <p id="article-lede" class="lede"></p>
+      <div id="intro-copy" class="intro-copy"></div>
+    </header>
+
+    <main class="scrolly-shell" aria-label="Nachrichtenverlauf">
+      <div class="visual-layer" aria-live="polite">
+        <div class="visual-frame">
+          <img id="visual-image" alt="Dokumentvorschau" hidden />
+          <div id="visual-placeholder" class="placeholder">
+            <p>Dokumentvorschau folgt</p>
+          </div>
+        </div>
+        <div class="meta-overlay">
+          <p id="active-date" class="active-date"></p>
+          <p class="progress-label">Fortschritt</p>
+          <div class="progress-track" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="progress-track">
+            <span id="progress-fill"></span>
+          </div>
+        </div>
+      </div>
+
+      <section id="steps" class="steps" aria-label="Einzelnachrichten"></section>
+    </main>
+
+    <template id="step-template">
+      <article class="step" tabindex="0">
+        <p class="step-date"></p>
+        <p class="step-fromto"></p>
+        <p class="step-message"></p>
+        <div class="docs" aria-label="Dokumente"></div>
+      </article>
+    </template>
+
+    <script src="app.js" type="module"></script>
+  </body>
+</html>

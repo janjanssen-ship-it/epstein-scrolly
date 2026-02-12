@@ -1,0 +1,1571 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Das Protokoll</title>
+    <style>:root {
+  --bg: #f8fbff;
+  --paper: #edf4ff;
+  --ink: #07184d;
+  --muted: #0d2880;
+  --line: #cddcff;
+  --accent: #2659ff;
+  --overlay: rgba(7, 24, 77, 0.4);
+  --card: rgba(237, 244, 255, 0.9);
+}
+
+@font-face {
+  font-family: 'Matter';
+  src: url('Matter Font copy/Matter-Light.otf') format('opentype');
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Matter';
+  src: url('Matter Font copy/Matter-Regular.otf') format('opentype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Matter';
+  src: url('Matter Font copy/Matter-Medium.otf') format('opentype');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Matter';
+  src: url('Matter Font copy/Matter-SemiBold.otf') format('opentype');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Matter';
+  src: url('Matter Font copy/Matter-Bold.otf') format('opentype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: 'Matter', sans-serif;
+  font-weight: 400;
+  color: var(--ink);
+  background:
+    radial-gradient(circle at 15% 20%, #f1f6ff 0%, transparent 35%),
+    radial-gradient(circle at 85% 80%, #eef4ff 0%, transparent 30%),
+    var(--bg);
+  line-height: 1.45;
+}
+
+.article-header {
+  position: relative;
+  z-index: 3;
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 4rem 1.25rem 2.5rem;
+  background: var(--bg);
+}
+
+.kicker {
+  margin: 0 0 0.5rem;
+  font-size: 0.82rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent);
+  font-weight: 700;
+}
+
+h1 {
+  margin: 0;
+  font-family: 'Matter', sans-serif;
+  font-weight: 700;
+  font-size: clamp(2rem, 3.6vw, 3.3rem);
+  line-height: 1.08;
+}
+
+.lede {
+  margin: 0.9rem 0 0;
+  max-width: 72ch;
+  font-size: clamp(1.02rem, 1.8vw, 1.25rem);
+  color: var(--ink);
+  font-weight: 600;
+}
+
+.intro-copy p {
+  max-width: 74ch;
+  margin: 1.1rem 0 0;
+  color: var(--muted);
+}
+
+.scrolly-shell {
+  position: relative;
+}
+
+.visual-layer {
+  position: sticky;
+  top: 0.9rem;
+  z-index: 1;
+  height: calc(100vh - 0.9rem);
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 0 1.25rem;
+}
+
+.visual-frame {
+  position: absolute;
+  inset: 0 1.25rem;
+  overflow: hidden;
+  background: #07184d;
+  border-radius: 10px;
+}
+
+.visual-frame::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    180deg,
+    rgba(7, 24, 77, 0.2) 0%,
+    rgba(7, 24, 77, 0.35) 55%,
+    rgba(7, 24, 77, 0.55) 100%
+  );
+  pointer-events: none;
+}
+
+.visual-frame img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top center;
+  background: #0d2880;
+}
+
+.placeholder {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  color: rgba(255, 255, 255, 0.92);
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+
+.meta-overlay {
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  right: auto;
+  width: min(360px, calc(100% - 2rem));
+  border: 1px solid rgba(237, 244, 255, 0.46);
+  background: rgba(7, 24, 77, 0.58);
+  border-radius: 10px;
+  padding: 0.85rem 1rem;
+  backdrop-filter: blur(5px);
+  color: #edf4ff;
+}
+
+.active-date {
+  margin: 0;
+  font-weight: 700;
+}
+
+.progress-label {
+  margin: 0.65rem 0 0.35rem;
+  font-size: 0.84rem;
+  color: rgba(237, 244, 255, 0.9);
+}
+
+.progress-track {
+  width: 100%;
+  height: 8px;
+  border-radius: 999px;
+  background: rgba(237, 244, 255, 0.24);
+  overflow: hidden;
+}
+
+.progress-track span {
+  display: block;
+  height: 100%;
+  width: 0;
+  background: linear-gradient(90deg, #2659ff, #0d2880);
+  transition: width 220ms ease;
+}
+
+.steps {
+  position: relative;
+  z-index: 2;
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 8vh 1.1rem 12vh;
+  display: grid;
+  gap: 42vh;
+}
+
+.step {
+  background: var(--card);
+  border: 1px solid #d7e3ff;
+  border-left: 4px solid #98b3ff;
+  border-radius: 9px;
+  padding: 1rem;
+  box-shadow: 0 14px 40px rgba(7, 24, 77, 0.2);
+  backdrop-filter: blur(3px);
+  transition: border-color 220ms ease, transform 220ms ease, opacity 220ms ease;
+  opacity: 0.52;
+}
+
+.step.is-active {
+  opacity: 1;
+  border-left-color: var(--accent);
+  transform: translateY(-2px);
+}
+
+.step-date {
+  margin: 0;
+  font-size: 0.82rem;
+  color: var(--accent);
+  font-weight: 700;
+}
+
+.step-fromto {
+  margin: 0.45rem 0;
+  font-size: 0.9rem;
+  color: var(--muted);
+}
+
+.step-message {
+  margin: 0;
+  font-size: 1.03rem;
+  color: var(--ink);
+  font-weight: 500;
+}
+
+.docs {
+  margin-top: 0.8rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+
+.doc-badge {
+  display: inline-block;
+  padding: 0.2rem 0.45rem;
+  border-radius: 999px;
+  font-size: 0.74rem;
+  border: 1px solid #bfd1ff;
+  color: #0d2880;
+  background: #f4f8ff;
+  text-decoration: none;
+}
+
+.doc-badge:hover,
+.doc-badge:focus-visible {
+  border-color: #2659ff;
+  color: #07184d;
+}
+
+.step:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+@media (max-width: 900px) {
+  .article-header {
+    padding-top: 3.2rem;
+  }
+
+  .meta-overlay {
+    top: 0.7rem;
+    left: 1.35rem;
+    width: calc(100% - 2.7rem);
+  }
+
+  .steps {
+    padding: 11vh 0.8rem 10vh;
+    gap: 34vh;
+  }
+
+  .visual-layer {
+    height: calc(100vh - 0.7rem);
+    padding: 0 0.8rem;
+  }
+
+  .visual-frame {
+    inset: 0 0.8rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    scroll-behavior: auto !important;
+    transition: none !important;
+  }
+}
+</style>
+  </head>
+  <body>
+    <header class="article-header">
+      <p class="kicker" id="article-kicker"></p>
+      <h1 id="article-title"></h1>
+      <p id="article-lede" class="lede"></p>
+      <div id="intro-copy" class="intro-copy"></div>
+    </header>
+
+    <main class="scrolly-shell" aria-label="Nachrichtenverlauf">
+      <div class="visual-layer" aria-live="polite">
+        <div class="visual-frame">
+          <img id="visual-image" alt="Dokumentvorschau" hidden />
+          <div id="visual-placeholder" class="placeholder">
+            <p>Dokumentvorschau folgt</p>
+          </div>
+        </div>
+        <div class="meta-overlay">
+          <p id="active-date" class="active-date"></p>
+          <p class="progress-label">Fortschritt</p>
+          <div class="progress-track" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="progress-track">
+            <span id="progress-fill"></span>
+          </div>
+        </div>
+      </div>
+
+      <section id="steps" class="steps" aria-label="Einzelnachrichten"></section>
+    </main>
+
+    <template id="step-template">
+      <article class="step" tabindex="0">
+        <p class="step-date"></p>
+        <p class="step-fromto"></p>
+        <p class="step-message"></p>
+        <div class="docs" aria-label="Dokumente"></div>
+      </article>
+    </template>
+
+    <script>
+      const PAYLOAD = {
+  "intro": {
+    "kicker": "Das Protokoll",
+    "title": "Wort für Wort: der Austausch zwischen Tchoumi und Epstein",
+    "lede": "Im Januar 2011 stand das russisch-schweizer Model Xenia Tchoumi mehrfach im Kontakt mit Jeffrey Epstein. 20 Minuten zeigt den neu veröffentlichten Chatverlauf in der zeitlichen Abfolge.",
+    "intro_paragraphs": [
+      "Sie nannte ihn «Boss»: In den neu veröffentlichten Epstein-Files taucht unter anderem das russisch-schweizerische Model Xenia Tchoumi auf – damals unter ihrem ursprünglichen Namen Tchoumitcheva. Im Winter 2010 und 2011 führte sie einen ausgiebigen Austausch mit Jeffrey Epstein. 20 Minuten zeigt den Chatverlauf in der zeitlichen abfolge zum Nachlesen."
+    ]
+  },
+  "messages": [
+    {
+      "id": "msg-001",
+      "date_iso": "2010-12-04",
+      "date_label": "4. Dezember 2010",
+      "sender": "Tancredi Marchiolo",
+      "recipient": "Jeffrey Epstein",
+      "message": "Ciao Jeffrey, eine neue Freundin, Xenia Tchoumitcheva (eher so eine Einmalige, Zweimalige...), reist Anfang Jan nach NY. Habe sie in Abu Dhabi getroffen und dann nach London geflogen. Kann ich ihr sagen, sie soll dich anrufen? Sie landet am 16.-17. oder so um dieses Datum herum... halb Schweizerin, halb Russin - ich denke, die russische Seite gewinnt! Ihre Nummer ist [geschwärzt]. Denke an dich, Ciao!",
+      "documents": [
+        "EFTA02413831.pdf"
+      ],
+      "parse_flags": []
+    },
+    {
+      "id": "msg-002",
+      "date_iso": "2010-12-12",
+      "date_label": "12. Dezember 2010",
+      "sender": "Jeffrey Epstein",
+      "recipient": "Xenia Tchoumitcheva",
+      "message": "Sundance Schedule /",
+      "documents": [
+        "EFTA01796045.pdf"
+      ],
+      "parse_flags": []
+    },
+    {
+      "id": "msg-003",
+      "date_iso": "2010-12-30",
+      "date_label": "30. Dezember 2010",
+      "sender": "Xenia Tchoumitcheva",
+      "recipient": "Jeffrey Epstein",
+      "message": "kein Anhang",
+      "documents": [
+        "EFTA01796045.pdf",
+        "EFTA01796155.pdf",
+        "EFTA01830993.pdf",
+        "EFTA01994996.pdf",
+        "EFTA01995740.pdf"
+      ],
+      "parse_flags": []
+    },
+    {
+      "id": "msg-004",
+      "date_iso": "2010-12-30",
+      "date_label": "30. Dezember 2010",
+      "sender": "Jeffrey Epstein",
+      "recipient": "Xenia Tchoumitcheva",
+      "message": "http://www.sundance.org/festival/support-us/join-patron-circle/",
+      "documents": [
+        "EFTA01796045.pdf",
+        "EFTA01830993.pdf",
+        "EFTA01994996.pdf"
+      ],
+      "parse_flags": []
+    },
+    {
+      "id": "msg-005",
+      "date_iso": "2010-12-30",
+      "date_label": "30. Dezember 2010",
+      "sender": "Xenia Tchoumitcheva",
+      "recipient": "Jeffrey Epstein",
+      "message": "Danke! :)",
+      "documents": [
+        "EFTA01796045.pdf",
+        "EFTA01830993.pdf",
+        "EFTA01994996.pdf"
+      ],
+      "parse_flags": []
+    },
+    {
+      "id": "msg-006",
+      "date_iso": "2011-01-14",
+      "date_label": "14. Januar 2011",
+      "sender": "Jeffrey Epstein",
+      "recipient": "Xenia Tchoumitcheva",
+      "message": "[Leer/Nur Betreffzeile]",
+      "documents": [
+        "EFTA00649258.pdf",
+        "EFTA01791701.pdf"
+      ],
+      "parse_flags": []
+    },
+    {
+      "id": "msg-007",
+      "date_iso": "2011-01-14",
+      "date_label": "14. Januar 2011",
+      "sender": "Xenia Tchoumitcheva",
+      "recipient": "Jeffrey Epstein",
+      "message": "Paradies. Grüss Richard von mir ha",
+      "documents": [
+        "EFTA00649258.pdf",
+        "EFTA01791701.pdf"
+      ],
+      "parse_flags": []
+    },
+    {
+      "id": "msg-008",
+      "date_iso": "2011-01-15",
+      "date_label": "15. Januar 2011",
+      "sender": "Jeffrey Epstein",
+      "recipient": "Xenia Tchoumitcheva",
+      "message": "skype?",
+      "documents": [
+        "EFTA00649258.pdf",
+        "EFTA01791701.pdf"
+      ],
+      "parse_flags": []
+    },
+    {
+      "id": "msg-009",
+      "date_iso": "2011-01-15",
+      "date_label": "15. Januar 2011",
+      "sender": "Xenia Tchoumitcheva",
+      "recipient": "Jeffrey Epstein",
+      "message": "Bist du so gelangweilt? Bin in 2-3 Stunden zu Hause.. Falls du noch verfügbar bist.",
+      "documents": [
+        "EFTA00649258.pdf",
+        "EFTA01791701.pdf"
+      ],
+      "parse_flags": []
+    },
+    {
+      "id": "msg-010",
+      "date_iso": "2011-01-15",
+      "date_label": "15. Januar 2011",
+      "sender": "Jeffrey Epstein",
+      "recipient": "Xenia Tchoumitcheva",
+      "message": "frühmorgendlicher Regen",
+      "documents": [
+        "EFTA00649258.pdf",
+        "EFTA01791701.pdf"
+      ],
+      "parse_flags": []
+    },
+    {
+      "id": "msg-011",
+      "date_iso": "2011-01-15",
+      "date_label": "15. Januar 2011",
+      "sender": "Xenia Tchoumitcheva",
+      "recipient": "Jeffrey Epstein",
+      "message": "Lies ein Buch",
+      "documents": [
+        "EFTA00649258.pdf",
+        "EFTA01791701.pdf"
+      ],
+      "parse_flags": []
+    },
+    {
+      "id": "msg-012",
+      "date_iso": "2011-01-15",
+      "date_label": "15. Januar 2011",
+      "sender": "Jeffrey Epstein",
+      "recipient": "Xenia Tchoumitcheva",
+      "message": "schreib ein Buch wäre ein passenderer Vorschlag gewesen. ich maile dir am Ende des Tages",
+      "documents": [
+        "EFTA00649258.pdf",
+        "EFTA01791701.pdf"
+      ],
+      "parse_flags": []
+    },
+    {
+      "id": "msg-013",
+      "date_iso": "2011-01-15",
+      "date_label": "15. Januar 2011",
+      "sender": "Xenia Tchoumitcheva",
+      "recipient": "Jeffrey Epstein",
+      "message": ";) das eine oder das andere klingt reizvoll.",
+      "documents": [
+        "EFTA00649258.pdf",
+        "EFTA01791701.pdf"
+      ],
+      "parse_flags": []
+    },
+    {
+      "id": "msg-014",
+      "date_iso": "2011-01-15",
+      "date_label": "15. Januar 2011",
+      "sender": "Jeffrey Epstein",
+      "recipient": "Xenia Tchoumitcheva",
+      "message": "Jetzt? Entschuldige all die Tippfehler .Gesendet von meinem iPhone",
+      "documents": [
+        "EFTA00649258.pdf",
+        "EFTA00902600.pdf"
+      ],
+      "parse_flags": []
+    },
+    {
+      "id": "msg-015",
+      "date_iso": "2011-01-15",
+      "date_label": "15. Januar 2011",
+      "sender": "Xenia Tchoumitcheva",
+      "recipient": "Jeffrey Epstein",
+      "message": "Habe keine Tippfehler gesehen, Jetzt arbeite ich an einer Eröffnung Jeff.. Werde dir texten, wenn ich fertig bin",
+      "documents": [
+        "EFTA00649258.pdf",
+        "EFTA00902600.pdf"
+      ],
+      "parse_flags": [
+        "inferred_message_label"
+      ]
+    },
+    {
+      "id": "msg-016",
+      "date_iso": "2011-01-15",
+      "date_label": "15. Januar 2011",
+      "sender": "Xenia Tchoumitcheva",
+      "recipient": "Jeffrey Epstein",
+      "message": "erledigt!",
+      "documents": [
+        "EFTA00649258.pdf"
+      ],
+      "parse_flags": []
+    },
+    {
+      "id": "msg-017",
+      "date_iso": "2011-01-16",
+      "date_label": "16. Januar 2011",
+      "sender": "Jeffrey Epstein",
+      "recipient": "Xenia Tchoumitcheva",
+      "message": "jetzt?",
+      "documents": [
+        "EFTA00661383.pdf",
+        "EFTA00661416.pdf"
+      ],
+      "parse_flags": []
+    },
+    {
+      "id": "msg-018",
+      "date_iso": "2011-01-16",
+      "date_label": "16. Januar 2011",
+      "sender": "Xenia Tchoumitcheva",
+      "recipient": "Jeffrey Epstein",
+      "message": "Erst heute Abend.. Im Taxi, Zug etc.. Wie läuft es im Paradies?",
+      "documents": [
+        "EFTA00902592.pdf",
+        "EFTA00902600.pdf"
+      ],
+      "parse_flags": []
+    },
+    {
+      "id": "msg-019",
+      "date_iso": "2011-01-16",
+      "date_label": "16. Januar 2011",
+      "sender": "Jeffrey Epstein",
+      "recipient": "Xenia Tchoumitcheva",
+      "message": "wie immer",
+      "documents": [
+        "EFTA00902592.pdf",
+        "EFTA00902600.pdf"
+      ],
+      "parse_flags": []
+    },
+    {
+      "id": "msg-020",
+      "date_iso": "2011-01-16",
+      "date_label": "16. Januar 2011",
+      "sender": "Xenia Tchoumitcheva",
+      "recipient": "Jeffrey Epstein",
+      "message": "Was ist immer",
+      "documents": [
+        "EFTA00902592.pdf",
+        "EFTA00902600.pdf"
+      ],
+      "parse_flags": []
+    },
+    {
+      "id": "msg-021",
+      "date_iso": "2011-01-16",
+      "date_label": "16. Januar 2011",
+      "sender": "Jeffrey Epstein",
+      "recipient": "Xenia Tchoumitcheva",
+      "message": "wie es im Paradies immer läuft... deshalb heisst es Paradies., die Frage wie es im Himmel läuft ist selbstreferenziell.. per Definition ist es der Himmel.. wie auch immer, hast du eine Zeit, wann du zum Skypen verfügbar bist?",
+      "documents": [
+        "EFTA00902592.pdf",
+        "EFTA00902600.pdf"
+      ],
+      "parse_flags": []
+    },
+    {
+      "id": "msg-022",
+      "date_iso": "2011-01-16",
+      "date_label": "16. Januar 2011",
+      "sender": "Xenia Tchoumitcheva",
+      "recipient": "Jeffrey Epstein",
+      "message": "individuelle Wahrnehmung des Paradieses kann unterschiedlich sein, ich war neugierig deine zu lesen Bist du ein glücklicher Mensch? Ich würde sagen meine 18/19 Uhr MEZ",
+      "documents": [
+        "EFTA00902592.pdf",
+        "EFTA00902600.pdf"
+      ],
+      "parse_flags": []
+    },
+    {
+      "id": "msg-023",
+      "date_iso": "2011-01-16",
+      "date_label": "16. Januar 2011",
+      "sender": "Jeffrey Epstein",
+      "recipient": "Xenia Tchoumitcheva",
+      "message": "ich bin eine begeisterte Person , hatte nie einen Tropfen Alkohol , oder eine Droge.",
+      "documents": [
+        "EFTA00902592.pdf",
+        "EFTA00902600.pdf"
+      ],
+      "parse_flags": []
+    },
+    {
+      "id": "msg-024",
+      "date_iso": "2011-01-16",
+      "date_label": "16. Januar 2011",
+      "sender": "Xenia Tchoumitcheva",
+      "recipient": "Jeffrey Epstein",
+      "message": "http://www.hauteliving.com/2011/01/xenias-world-degrisogonoalpinerock-in-st-moritz/ 2011/1/16 [Uhrzeit] Ich bin ähnlich Skype in 1h?",
+      "documents": [
+        "EFTA00902600.pdf",
+        "EFTA01793136.pdf"
+      ],
+      "parse_flags": []
+    },
+    {
+      "id": "msg-025",
+      "date_iso": "2011-01-16",
+      "date_label": "16. Januar 2011",
+      "sender": "Jeffrey Epstein",
+      "recipient": "Xenia Tchoumitcheva",
+      "message": "Ok Entschuldige all die Tippfehler .Gesendet von meinem iPhone",
+      "documents": [
+        "EFTA00902600.pdf",
+        "EFTA01834134.pdf"
+      ],
+      "parse_flags": []
+    },
+    {
+      "id": "msg-026",
+      "date_iso": "2011-01-16",
+      "date_label": "16. Januar 2011",
+      "sender": "Jeffrey Epstein",
+      "recipient": "Xenia Tchoumitcheva",
+      "message": "habe gerade versucht zu skypen, keine Antwort",
+      "documents": [
+        "EFTA00902608.pdf",
+        "EFTA00902611.pdf"
+      ],
+      "parse_flags": []
+    },
+    {
+      "id": "msg-027",
+      "date_iso": "2011-01-16",
+      "date_label": "16. Januar 2011",
+      "sender": "Xenia Tchoumitcheva",
+      "recipient": "Jeffrey Epstein",
+      "message": "bitte bring mir bei, wie man Geld verdient",
+      "documents": [
+        "EFTA00902611.pdf",
+        "EFTA01834336.pdf"
+      ],
+      "parse_flags": []
+    },
+    {
+      "id": "msg-028",
+      "date_iso": "2011-01-16",
+      "date_label": "16. Januar 2011",
+      "sender": "Jeffrey Epstein",
+      "recipient": "Xenia Tchoumitcheva",
+      "message": "ich habe Skype versucht,, keine Antwort. ich versuche es morgen wieder schlaf gut",
+      "documents": [
+        "EFTA01833385.pdf"
+      ],
+      "parse_flags": []
+    },
+    {
+      "id": "msg-029",
+      "date_iso": "2011-01-17",
+      "date_label": "17. Januar 2011",
+      "sender": "Jeffrey Epstein",
+      "recipient": "Xenia Tchoumitcheva",
+      "message": "bist du frei zum skypen,, Ich möchte dir deine zwei wichtigsten Lektionen geben.",
+      "documents": [
+        "EFTA00902638.pdf",
+        "EFTA01798153.pdf"
+      ],
+      "parse_flags": []
+    },
+    {
+      "id": "msg-030",
+      "date_iso": "2011-01-17",
+      "date_label": "17. Januar 2011",
+      "sender": "Xenia Tchoumitcheva",
+      "recipient": "Jeffrey Epstein",
+      "message": "Mein Lieber, ich kann so gegen 4-5-ish, wahrscheinlich während sie meine Haare machen [making my hair]...",
+      "documents": [
+        "EFTA01798153.pdf",
+        "EFTA01798335.pdf"
+      ],
+      "parse_flags": []
+    },
+    {
+      "id": "msg-031",
+      "date_iso": "2011-01-17",
+      "date_label": "17. Januar 2011",
+      "sender": "Jeffrey Epstein",
+      "recipient": "Xenia Tchoumitcheva",
+      "message": "Das sind Lektionen fürs Leben.. du solltest warten, bis du ihnen volle Aufmerksamkeit schenken kannst. vielleicht später heute Nacht oder morgen, du hast 21 Jahre gewartet , ein weiterer Tag wird die Dinge nicht ändern",
+      "documents": [
+        "EFTA01798584.pdf",
+        "EFTA01833678.pdf"
+      ],
+      "parse_flags": []
+    },
+    {
+      "id": "msg-032",
+      "date_iso": "2011-01-17",
+      "date_label": "17. Januar 2011",
+      "sender": "Jeffrey Epstein",
+      "recipient": "Xenia Tchoumitcheva",
+      "message": "z.K.,, sprich niemanden als \" mein Lieber \" an.. ausserdem heisst es im Englischen \" doing my hair \" [Haare frisieren], anstatt sie zu machen [\"making it\"]",
+      "documents": [
+        "EFTA01798153.pdf",
+        "EFTA01798335.pdf"
+      ],
+      "parse_flags": []
+    },
+    {
+      "id": "msg-033",
+      "date_iso": "2011-01-17",
+      "date_label": "17. Januar 2011",
+      "sender": "Xenia Tchoumitcheva",
+      "recipient": "Jeffrey Epstein",
+      "message": "Danke Boss",
+      "documents": [
+        "EFTA01798153.pdf",
+        "EFTA01798335.pdf"
+      ],
+      "parse_flags": []
+    },
+    {
+      "id": "msg-034",
+      "date_iso": "2011-01-17",
+      "date_label": "17. Januar 2011",
+      "sender": "Jeffrey Epstein",
+      "recipient": "Xenia Tchoumitcheva",
+      "message": "heute, übe,, deine Meinung oder Ideen zu nichts an jemanden zu geben, der älter ist als du. Stelle NUR Fragen..NUR --was denken sie, was wissen sie",
+      "documents": [
+        "EFTA01798153.pdf",
+        "EFTA01833929.pdf"
+      ],
+      "parse_flags": []
+    },
+    {
+      "id": "msg-035",
+      "date_iso": "2011-01-17",
+      "date_label": "17. Januar 2011",
+      "sender": "Xenia Tchoumitcheva",
+      "recipient": "Jeffrey Epstein",
+      "message": "Ok. Frage, du bist an der Meinung von niemandem interessiert, der jünger ist als du ?",
+      "documents": [
+        "EFTA01798153.pdf",
+        "EFTA01833929.pdf"
+      ],
+      "parse_flags": []
+    },
+    {
+      "id": "msg-036",
+      "date_iso": "2011-01-17",
+      "date_label": "17. Januar 2011",
+      "sender": "Jeffrey Epstein",
+      "recipient": "Xenia Tchoumitcheva",
+      "message": "Ich bin sehr interessiert , aber das nützt meistens mir, nicht der Person, deren Meinung ich suche. Ich stelle Fragen . Betrachte deine Meinungen wie Geld. Du würdest es nicht umsonst weggeben. Du solltest so viele wie möglich sammeln, und da Männer sehr bereitwillig sind, mit dir zu reden. HOL dir Informationen. Du bist nicht mehr in der High School, wo du dein Wissen demonstrieren musst. stell einfach Fragen, versuch es. du wirst sehen. hab einen schönen Tag,, Ich reise zu einer anderen Insel ab.",
+      "documents": [
+        "EFTA01833929.pdf",
+        "EFTA02534654.pdf"
+      ],
+      "parse_flags": []
+    },
+    {
+      "id": "msg-037",
+      "date_iso": "2011-01-17",
+      "date_label": "17. Januar 2011",
+      "sender": "Xenia Tchoumitcheva",
+      "recipient": "Jeffrey Epstein",
+      "message": "Ok, ich werde im Laufe der Zeit viele Fragen an dich haben. Du darfst mein Menthor werden. Hab einen grossartigen Tag.",
+      "documents": [
+        "EFTA01833929.pdf"
+      ],
+      "parse_flags": []
+    },
+    {
+      "id": "msg-038",
+      "date_iso": "2011-01-17",
+      "date_label": "17. Januar 2011",
+      "sender": "Jeffrey Epstein",
+      "recipient": "Xenia Tchoumitcheva",
+      "message": "es wird \"Mentor\" geschrieben. ,und es gibt eine lange Schlange von Leuten, die auf dieses Privileg warten : )...Stelle Fragen an Leute, die du heute triffst,, was ist der schwierigste Teil ihres Jobs , ? wie haben sie ihre Karriere begonnen .. beobachte, wie viele Männer immer weiter über sich selbst reden wollen.",
+      "documents": [
+        "EFTA01833929.pdf"
+      ],
+      "parse_flags": []
+    },
+    {
+      "id": "msg-039",
+      "date_iso": "2011-01-17",
+      "date_label": "17. Januar 2011",
+      "sender": "Xenia Tchoumitcheva",
+      "recipient": "Jeffrey Epstein",
+      "message": "Dann später heute Nacht :)",
+      "documents": [
+        "EFTA01798584.pdf",
+        "EFTA01833678.pdf"
+      ],
+      "parse_flags": []
+    },
+    {
+      "id": "msg-040",
+      "date_iso": "2011-01-17",
+      "date_label": "17. Januar 2011",
+      "sender": "Xenia Tchoumitcheva",
+      "recipient": "Jeffrey Epstein",
+      "message": "Mentor, entschuldigung. Werde ich",
+      "documents": [
+        "EFTA01833929.pdf"
+      ],
+      "parse_flags": []
+    },
+    {
+      "id": "msg-041",
+      "date_iso": "2011-01-17",
+      "date_label": "17. Januar 2011",
+      "sender": "Jeffrey Epstein",
+      "recipient": "Xenia Tchoumitcheva",
+      "message": "jetzt?",
+      "documents": [
+        "EFTA00661383.pdf",
+        "EFTA00661416.pdf"
+      ],
+      "parse_flags": []
+    },
+    {
+      "id": "msg-042",
+      "date_iso": "2011-01-17",
+      "date_label": "17. Januar 2011",
+      "sender": "Xenia Tchoumitcheva",
+      "recipient": "Jeffrey Epstein",
+      "message": "Ich kann jetzt! Kannst du?",
+      "documents": [
+        "EFTA00661383.pdf",
+        "EFTA00661416.pdf"
+      ],
+      "parse_flags": []
+    },
+    {
+      "id": "msg-043",
+      "date_iso": "2011-01-17",
+      "date_label": "17. Januar 2011",
+      "sender": "Jeffrey Epstein",
+      "recipient": "Xenia Tchoumitcheva",
+      "message": "15 Minuten Entschuldige all die Tippfehler .Gesendet von meinem iPhone",
+      "documents": [
+        "EFTA00661383.pdf",
+        "EFTA00661416.pdf"
+      ],
+      "parse_flags": []
+    },
+    {
+      "id": "msg-044",
+      "date_iso": "2011-01-17",
+      "date_label": "17. Januar 2011",
+      "sender": "Xenia Tchoumitcheva",
+      "recipient": "Jeffrey Epstein",
+      "message": "K",
+      "documents": [
+        "EFTA00661383.pdf",
+        "EFTA00661416.pdf"
+      ],
+      "parse_flags": []
+    },
+    {
+      "id": "msg-045",
+      "date_iso": "2011-01-18",
+      "date_label": "18. Januar 2011",
+      "sender": "Xenia Tchoumitcheva",
+      "recipient": "Jeffrey Epstein",
+      "message": "Hallo. Fliege morgen, aber - lohnt es sich in diesem Stadium für mich, zu Sundance zu gehen?",
+      "documents": [
+        "EFTA00661416.pdf",
+        "EFTA00661418.pdf"
+      ],
+      "parse_flags": []
+    },
+    {
+      "id": "msg-046",
+      "date_iso": "2011-01-18",
+      "date_label": "18. Januar 2011",
+      "sender": "Jeffrey Epstein",
+      "recipient": "Xenia Tchoumitcheva",
+      "message": "Du kennst die Antwort Entschuldige all die Tippfehler .Gesendet von meinem iPhone",
+      "documents": [
+        "EFTA00661416.pdf",
+        "EFTA00661418.pdf"
+      ],
+      "parse_flags": []
+    },
+    {
+      "id": "msg-047",
+      "date_iso": "2011-01-18",
+      "date_label": "18. Januar 2011",
+      "sender": "Xenia Tchoumitcheva",
+      "recipient": "Jeffrey Epstein",
+      "message": "Die Antwort ist nein, Soll ich absagen, deiner Meinung nach?",
+      "documents": [
+        "EFTA00661416.pdf",
+        "EFTA00661418.pdf"
+      ],
+      "parse_flags": []
+    },
+    {
+      "id": "msg-048",
+      "date_iso": "2011-01-18",
+      "date_label": "18. Januar 2011",
+      "sender": "Jeffrey Epstein",
+      "recipient": "Xenia Tchoumitcheva",
+      "message": "Es ist mein Geburtstag am Do ich werde für ein paar Tage in ny sein Entschuldige all die Tippfehler .Gesendet von meinem iPhone",
+      "documents": [
+        "EFTA00661416.pdf",
+        "EFTA00661418.pdf"
+      ],
+      "parse_flags": []
+    },
+    {
+      "id": "msg-049",
+      "date_iso": "2011-01-18",
+      "date_label": "18. Januar 2011",
+      "sender": "Xenia Tchoumitcheva",
+      "recipient": "Jeffrey Epstein",
+      "message": "Auf keinen Fall, ich werde ab dem 23. dort sein Werde ich dich sehen?",
+      "documents": [
+        "EFTA00661416.pdf",
+        "EFTA00661418.pdf"
+      ],
+      "parse_flags": []
+    },
+    {
+      "id": "msg-050",
+      "date_iso": "2011-01-18",
+      "date_label": "18. Januar 2011",
+      "sender": "Jeffrey Epstein",
+      "recipient": "Xenia Tchoumitcheva",
+      "message": "??? Sonst Paris Entschuldige all die Tippfehler .Gesendet von meinem iPhone",
+      "documents": [
+        "EFTA00661416.pdf",
+        "EFTA00661418.pdf"
+      ],
+      "parse_flags": []
+    },
+    {
+      "id": "msg-051",
+      "date_iso": "2011-01-18",
+      "date_label": "18. Januar 2011",
+      "sender": "Xenia Tchoumitcheva",
+      "recipient": "Jeffrey Epstein",
+      "message": "Ich habe diesmal abgesagt, Soll ich morgen in nyc stoppen und am Mi abreisen?",
+      "documents": [
+        "EFTA00902375.pdf",
+        "EFTA01796332.pdf"
+      ],
+      "parse_flags": []
+    },
+    {
+      "id": "msg-052",
+      "date_iso": "2011-01-18",
+      "date_label": "18. Januar 2011",
+      "sender": "Xenia Tchoumitcheva",
+      "recipient": "Jeffrey Epstein",
+      "message": "Sundance 19.-23. Nyc 23.-27.-ish Wir können Paris machen Lass es mich einfach wissen",
+      "documents": [
+        "EFTA00661418.pdf",
+        "EFTA01793801.pdf"
+      ],
+      "parse_flags": []
+    },
+    {
+      "id": "msg-053",
+      "date_iso": "2011-01-18",
+      "date_label": "18. Januar 2011",
+      "sender": "Jeffrey Epstein",
+      "recipient": "Xenia Tchoumitcheva",
+      "message": "morgen ist mi",
+      "documents": [
+        "EFTA00902375.pdf",
+        "EFTA01796332.pdf"
+      ],
+      "parse_flags": []
+    },
+    {
+      "id": "msg-054",
+      "date_iso": "2011-01-18",
+      "date_label": "18. Januar 2011",
+      "sender": "Xenia Tchoumitcheva",
+      "recipient": "Jeffrey Epstein",
+      "message": "Also was ist der Deal, nächstes Mal?",
+      "documents": [
+        "EFTA00902375.pdf",
+        "EFTA01796332.pdf"
+      ],
+      "parse_flags": []
+    },
+    {
+      "id": "msg-055",
+      "date_iso": "2011-01-18",
+      "date_label": "18. Januar 2011",
+      "sender": "Jeffrey Epstein",
+      "recipient": "Xenia Tchoumitcheva",
+      "message": "Ich denke, du solltest deinen Freund, der dich zu Sundance bringt, nicht beleidigen.. wir sollten warten.",
+      "documents": [
+        "EFTA00902375.pdf",
+        "EFTA01796332.pdf"
+      ],
+      "parse_flags": []
+    },
+    {
+      "id": "msg-056",
+      "date_iso": "2011-01-18",
+      "date_label": "18. Januar 2011",
+      "sender": "Xenia Tchoumitcheva",
+      "recipient": "Jeffrey Epstein",
+      "message": "Nein es ist ein Tag Verzögerung und sie kommen sowieso am Donnerstag an, also wird das nicht das Problem sein Aber ich verstehe, wenn es unbequem ist.",
+      "documents": [
+        "EFTA00902375.pdf",
+        "EFTA01796332.pdf"
+      ],
+      "parse_flags": []
+    },
+    {
+      "id": "msg-057",
+      "date_iso": "2011-01-18",
+      "date_label": "18. Januar 2011",
+      "sender": "Jeffrey Epstein",
+      "recipient": "Xenia Tchoumitcheva",
+      "message": "Überhaupt nicht , lass ihn dein Ticket über ny organisieren , mein Auto holt dich ab Entschuldige all die Tippfehler .Gesendet von meinem iPhone",
+      "documents": [
+        "EFTA00902375.pdf",
+        "EFTA01796332.pdf"
+      ],
+      "parse_flags": []
+    },
+    {
+      "id": "msg-058",
+      "date_iso": "2011-01-18",
+      "date_label": "18. Januar 2011",
+      "sender": "Xenia Tchoumitcheva",
+      "recipient": "Jeffrey Epstein",
+      "message": "ok erledigt reise am Donnerstagmorgen nach Salt Lake ab könntest du mir eine Unterkunft organisieren? ansonsten bleibe ich einfach bei meinem Freund [Detaillierte Fluginfos: Mailand nach New York, 19. Jan]",
+      "documents": [
+        "EFTA00902375.pdf",
+        "EFTA01796332.pdf"
+      ],
+      "parse_flags": []
+    },
+    {
+      "id": "msg-059",
+      "date_iso": "2011-01-18",
+      "date_label": "18. Januar 2011",
+      "sender": "Jeffrey Epstein",
+      "recipient": "Xenia Tchoumitcheva",
+      "message": "Woody kommt morgen zum Abendessen in ny Entschuldige all die Tippfehler .Gesendet von meinem iPhone",
+      "documents": [
+        "EFTA00902375.pdf",
+        "EFTA01796332.pdf"
+      ],
+      "parse_flags": []
+    },
+    {
+      "id": "msg-060",
+      "date_iso": "2011-01-18",
+      "date_label": "18. Januar 2011",
+      "sender": "Xenia Tchoumitcheva",
+      "recipient": "Jeffrey Epstein",
+      "message": "morgen stoppen und am Donnerstag abreisen? was der offizielle Plan war, den wir dann abgesagt haben",
+      "documents": [
+        "EFTA02006688.pdf"
+      ],
+      "parse_flags": []
+    },
+    {
+      "id": "msg-061",
+      "date_iso": "2011-01-18",
+      "date_label": "18. Januar 2011",
+      "sender": "Jeffrey Epstein",
+      "recipient": "Xenia Tchoumitcheva",
+      "message": "Grossartig Entschuldige all die Tippfehler .Gesendet von meinem iPhone",
+      "documents": [
+        "EFTA00902375.pdf",
+        "EFTA01796332.pdf"
+      ],
+      "parse_flags": []
+    },
+    {
+      "id": "msg-062",
+      "date_iso": "2011-01-19",
+      "date_label": "19. Januar 2011",
+      "sender": "Xenia Tchoumitcheva",
+      "recipient": "Jeffrey Epstein",
+      "message": "Reise ab. Du findest mich unter meiner Nummer [geschwärzt]",
+      "documents": [
+        "EFTA00902375.pdf",
+        "EFTA01796332.pdf"
+      ],
+      "parse_flags": []
+    },
+    {
+      "id": "msg-063",
+      "date_iso": "2011-01-23",
+      "date_label": "23. Januar 2011",
+      "sender": "Jeffrey Epstein",
+      "recipient": "Xenia Tchoumitcheva",
+      "message": "wann verlässt du ny",
+      "documents": [
+        "EFTA01797829.pdf"
+      ],
+      "parse_flags": []
+    },
+    {
+      "id": "msg-064",
+      "date_iso": "2011-01-23",
+      "date_label": "23. Januar 2011",
+      "sender": "Xenia Tchoumitcheva",
+      "recipient": "Jeffrey Epstein",
+      "message": "sollte am 27.",
+      "documents": [
+        "EFTA01797829.pdf"
+      ],
+      "parse_flags": []
+    },
+    {
+      "id": "msg-065",
+      "date_iso": "2011-01-30",
+      "date_label": "30. Januar 2011",
+      "sender": "Jeffrey Epstein",
+      "recipient": "Xenia Tchoumitcheva",
+      "message": "bin in ny",
+      "documents": [
+        "EFTA00903504.pdf",
+        "EFTA00903534.pdf"
+      ],
+      "parse_flags": []
+    },
+    {
+      "id": "msg-066",
+      "date_iso": "2011-01-31",
+      "date_label": "31. Januar 2011",
+      "sender": "Xenia Tchoumitcheva",
+      "recipient": "Jeffrey Epstein",
+      "message": "Ich gehe nach Ind",
+      "documents": [
+        "EFTA00903534.pdf",
+        "EFTA01801322.pdf"
+      ],
+      "parse_flags": []
+    },
+    {
+      "id": "msg-067",
+      "date_iso": "2011-01-31",
+      "date_label": "31. Januar 2011",
+      "sender": "Jeffrey Epstein",
+      "recipient": "Xenia Tchoumitcheva",
+      "message": "ist das Indiana oder Indien?",
+      "documents": [
+        "EFTA00903534.pdf",
+        "EFTA01801322.pdf"
+      ],
+      "parse_flags": []
+    },
+    {
+      "id": "msg-068",
+      "date_iso": "2011-01-31",
+      "date_label": "31. Januar 2011",
+      "sender": "Xenia Tchoumitcheva",
+      "recipient": "Jeffrey Epstein",
+      "message": "London, UK",
+      "documents": [
+        "EFTA01801322.pdf",
+        "EFTA01834112.pdf"
+      ],
+      "parse_flags": []
+    }
+  ]
+};
+      const IMAGE_MAP = {
+  "msg-001": [
+    "assets/previews/EFTA02413831.jpg"
+  ],
+  "msg-002": [
+    "assets/previews/EFTA01796045.jpg"
+  ],
+  "msg-003": [
+    "assets/previews/EFTA01830993.jpg"
+  ],
+  "msg-004": [
+    "assets/previews/EFTA01830993.jpg"
+  ],
+  "msg-005": [
+    "assets/previews/EFTA01830993.jpg"
+  ],
+  "msg-006": [
+    "assets/previews/EFTA01830993.jpg"
+  ],
+  "msg-007": [
+    "assets/previews/EFTA01830993.jpg"
+  ],
+  "msg-008": [
+    "assets/previews/EFTA01791701.jpg"
+  ],
+  "msg-009": [
+    "assets/previews/EFTA01791701.jpg"
+  ],
+  "msg-010": [
+    "assets/previews/EFTA01791701.jpg"
+  ],
+  "msg-011": [
+    "assets/previews/EFTA01791701.jpg"
+  ],
+  "msg-012": [
+    "assets/previews/EFTA01791701.jpg"
+  ],
+  "msg-013": [
+    "assets/previews/EFTA01791701.jpg"
+  ],
+  "msg-014": [
+    "assets/previews/EFTA01791701.jpg"
+  ],
+  "msg-015": [
+    "assets/previews/EFTA01791701.jpg"
+  ],
+  "msg-016": [
+    "assets/previews/EFTA01791701.jpg"
+  ],
+  "msg-017": [
+    "assets/previews/EFTA01791701.jpg"
+  ],
+  "msg-018": [
+    "assets/previews/EFTA00902592.jpg"
+  ],
+  "msg-019": [
+    "assets/previews/EFTA00902592.jpg"
+  ],
+  "msg-020": [
+    "assets/previews/EFTA00902592.jpg"
+  ],
+  "msg-021": [
+    "assets/previews/EFTA00902592.jpg"
+  ],
+  "msg-022": [
+    "assets/previews/EFTA00902592.jpg"
+  ],
+  "msg-023": [
+    "assets/previews/EFTA00902592.jpg"
+  ],
+  "msg-024": [
+    "assets/previews/EFTA00902592.jpg"
+  ],
+  "msg-025": [
+    "assets/previews/EFTA00902592.jpg"
+  ],
+  "msg-026": [
+    "assets/previews/EFTA00902592.jpg"
+  ],
+  "msg-027": [
+    "assets/previews/EFTA00902592.jpg"
+  ],
+  "msg-028": [
+    "assets/previews/EFTA01833385.jpg"
+  ],
+  "msg-029": [
+    "assets/previews/EFTA01833385.jpg"
+  ],
+  "msg-030": [
+    "assets/previews/EFTA01833385.jpg"
+  ],
+  "msg-031": [
+    "assets/previews/EFTA01833385.jpg"
+  ],
+  "msg-032": [
+    "assets/previews/EFTA01833385.jpg"
+  ],
+  "msg-033": [
+    "assets/previews/EFTA01798153.jpg"
+  ],
+  "msg-034": [
+    "assets/previews/EFTA01798153.jpg"
+  ],
+  "msg-035": [
+    "assets/previews/EFTA01798153.jpg"
+  ],
+  "msg-036": [
+    "assets/previews/EFTA01798153.jpg"
+  ],
+  "msg-037": [
+    "assets/previews/EFTA01798153.jpg"
+  ],
+  "msg-038": [
+    "assets/previews/EFTA01833929.jpg"
+  ],
+  "msg-039": [
+    "assets/previews/EFTA01833929.jpg"
+  ],
+  "msg-040": [
+    "assets/previews/EFTA01833929.jpg"
+  ],
+  "msg-041": [
+    "assets/previews/EFTA01833929.jpg"
+  ],
+  "msg-042": [
+    "assets/previews/EFTA01833929.jpg"
+  ],
+  "msg-043": [
+    "assets/previews/EFTA00661416.jpg"
+  ],
+  "msg-044": [
+    "assets/previews/EFTA00661416.jpg"
+  ],
+  "msg-045": [
+    "assets/previews/EFTA00661416.jpg"
+  ],
+  "msg-046": [
+    "assets/previews/EFTA00661416.jpg"
+  ],
+  "msg-047": [
+    "assets/previews/EFTA00661416.jpg"
+  ],
+  "msg-048": [
+    "assets/previews/EFTA00661416.jpg"
+  ],
+  "msg-049": [
+    "assets/previews/EFTA00661416.jpg"
+  ],
+  "msg-050": [
+    "assets/previews/EFTA00661416.jpg"
+  ],
+  "msg-051": [
+    "assets/previews/EFTA00661416.jpg"
+  ],
+  "msg-052": [
+    "assets/previews/EFTA00661416.jpg"
+  ],
+  "msg-053": [
+    "assets/previews/EFTA01796332.jpg"
+  ],
+  "msg-054": [
+    "assets/previews/EFTA01796332.jpg"
+  ],
+  "msg-055": [
+    "assets/previews/EFTA01796332.jpg"
+  ],
+  "msg-056": [
+    "assets/previews/EFTA01796332.jpg"
+  ],
+  "msg-057": [
+    "assets/previews/EFTA01796332.jpg"
+  ],
+  "msg-058": [
+    "assets/previews/EFTA01796332.jpg"
+  ],
+  "msg-059": [
+    "assets/previews/EFTA01796332.jpg"
+  ],
+  "msg-060": [
+    "assets/previews/EFTA01796332.jpg"
+  ],
+  "msg-061": [
+    "assets/previews/EFTA01796332.jpg"
+  ],
+  "msg-062": [
+    "assets/previews/EFTA01796332.jpg"
+  ],
+  "msg-063": [
+    "assets/previews/EFTA01797829.jpg"
+  ],
+  "msg-064": [
+    "assets/previews/EFTA01797829.jpg"
+  ],
+  "msg-065": [
+    "assets/previews/EFTA01797829.jpg"
+  ],
+  "msg-066": [
+    "assets/previews/EFTA01797829.jpg"
+  ],
+  "msg-067": [
+    "assets/previews/EFTA01797829.jpg"
+  ],
+  "msg-068": [
+    "assets/previews/EFTA01834112.jpg"
+  ]
+};
+
+      const stepsRoot = document.getElementById('steps');
+      const stepTemplate = document.getElementById('step-template');
+      const kickerEl = document.getElementById('article-kicker');
+      const titleEl = document.getElementById('article-title');
+      const ledeEl = document.getElementById('article-lede');
+      const introCopyEl = document.getElementById('intro-copy');
+      const activeDateEl = document.getElementById('active-date');
+      const progressTrack = document.getElementById('progress-track');
+      const progressFill = document.getElementById('progress-fill');
+      const visualImage = document.getElementById('visual-image');
+      const visualPlaceholder = document.getElementById('visual-placeholder');
+
+      const state = { messages: PAYLOAD.messages, imageMap: IMAGE_MAP };
+
+      function renderIntro(intro) {
+        kickerEl.textContent = intro.kicker;
+        titleEl.textContent = intro.title;
+        ledeEl.textContent = intro.lede;
+        intro.intro_paragraphs.forEach((paragraph) => {
+          const p = document.createElement('p');
+          p.textContent = paragraph;
+          introCopyEl.appendChild(p);
+        });
+      }
+
+      function renderSteps(messages) {
+        messages.forEach((item, index) => {
+          const fragment = stepTemplate.content.cloneNode(true);
+          const step = fragment.querySelector('.step');
+          const date = fragment.querySelector('.step-date');
+          const fromTo = fragment.querySelector('.step-fromto');
+          const message = fragment.querySelector('.step-message');
+          const docs = fragment.querySelector('.docs');
+
+          step.dataset.id = item.id;
+          step.dataset.index = String(index);
+
+          date.textContent = item.date_label;
+          fromTo.textContent = item.sender + ' an ' + item.recipient;
+          message.textContent = item.message || '[Leere Nachricht]';
+
+          item.documents.forEach((doc) => {
+            const badge = document.createElement('a');
+            badge.className = 'doc-badge';
+            badge.textContent = doc;
+            badge.href = 'Tchoumi/' + doc;
+            badge.target = '_blank';
+            badge.rel = 'noreferrer noopener';
+            docs.appendChild(badge);
+          });
+
+          stepsRoot.appendChild(fragment);
+        });
+      }
+
+      function updateVisual(message) {
+        const mapped = state.imageMap[message.id] || [];
+        if (mapped.length > 0) {
+          visualImage.src = mapped[0];
+          visualImage.hidden = false;
+          visualPlaceholder.hidden = true;
+        } else {
+          visualImage.hidden = true;
+          visualPlaceholder.hidden = false;
+        }
+      }
+
+      visualImage.addEventListener('error', () => {
+        visualImage.hidden = true;
+        visualPlaceholder.hidden = false;
+      });
+
+      function setActive(index) {
+        const steps = [...document.querySelectorAll('.step')];
+        steps.forEach((step) => step.classList.remove('is-active'));
+
+        const current = steps[index];
+        if (!current) return;
+
+        current.classList.add('is-active');
+
+        const item = state.messages[index];
+        activeDateEl.textContent = item.date_label;
+        updateVisual(item);
+
+        const progress = ((index + 1) / state.messages.length) * 100;
+        progressFill.style.width = progress + '%';
+        progressTrack.setAttribute('aria-valuenow', String(Math.round(progress)));
+      }
+
+      function setupObserver() {
+        const steps = [...document.querySelectorAll('.step')];
+        setActive(0);
+
+        const observer = new IntersectionObserver(
+          (entries) => {
+            entries.forEach((entry) => {
+              if (!entry.isIntersecting) return;
+              const index = Number(entry.target.dataset.index);
+              setActive(index);
+            });
+          },
+          { root: null, threshold: 0.5, rootMargin: '-10% 0px -35% 0px' }
+        );
+
+        steps.forEach((step) => observer.observe(step));
+      }
+
+      renderIntro(PAYLOAD.intro);
+      renderSteps(state.messages);
+      setupObserver();
+    </script>
+  </body>
+</html>
